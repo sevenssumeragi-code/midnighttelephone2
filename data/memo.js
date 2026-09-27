@@ -47,6 +47,8 @@ window.MEMO = {
   good_reny:       { cat: 'world', title: '届かなかった朝', text: 'ピークを越えた白眠には、ひとつの声では届かない。' },
   good_minase:     { cat: 'world', title: 'ママのとなり', text: 'ムニは最後まで、ママのそばにいた。' },
   good_hyu:        { cat: 'world', title: 'ひとりの放送', text: 'テーブルの上のラジオから、ヒュウの声。' },
+  makanai:         { cat: 'world', title: '焼け跡のまかない', text: 'ジンパチの分。私の分。……ママの分は、一番大きい皿に。' },
+  glass_supper:    { cat: 'minase', title: 'ガラス越しの夜食会', text: '看護師の顔を忘れて、前室の床で、息子と一緒に。' },
   bad04_vm:        { cat: 'world', title: '最後の留守電', text: '「……おあいこだな、ミル」' },
   conf_button:     { cat: 'world', title: '三者＝みんなでおはなし', text: '電話機の端に貼られたミナセさんの付箋。二つの回線を、ひとつにつなげる。' },
   everyone_arrive: { cat: 'world', title: 'ガラスの向こうの友達', text: '声だけしか知らなかった人たちが、ガラス一枚向こうに並んでいた。' },
@@ -157,6 +159,8 @@ window.MEMO = {
   neo_banquet:     { cat: 'neo', title: '秋の晩餐会', text: '祖父は毎年、街の人を誰彼構わず招いた。今年は、開けなかった。' },
   neo_jin:         { cat: 'neo', title: '祖父の注文', text: '月見館宛ての荷物。注文主は祖父。中身は「カップ麺 しおバター味 一ケース」。' },
   neo_menu:        { cat: 'neo', title: '客人の希望', text: '祖父の献立帳に、一行書き加えられた。' },
+  banquet_promise: { cat: 'neo', title: '晩餐会の約束', text: '「明日の夜、月見館で晩餐会を開く」。主賓の席は、電話機の前。空席では、ない。' },
+  omelet_relay:    { cat: 'neo', title: '弱火で、バターを多めに', text: 'ミナセさんから私へ。私からネオへ。ネオから、レニィとムニへ。' },
   neo_muni:        { cat: 'neo', title: 'ネオさま', text: '冗談で「様をつけろ」と言ったら、ずっとそう呼ばれている。' },
   neo_banquet_idea:{ cat: 'neo', title: '銀食器は残っている', text: '晩餐会は、館ではなく、あなたが開くもの。' },
 

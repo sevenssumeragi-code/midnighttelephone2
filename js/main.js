@@ -69,6 +69,7 @@
       else if (a === 'gallery') UI.openGallery();
       else if (a === 'endings') UI.openEndings();
       else if (a === 'memo') UI.openMemo();
+      else if (a === 'sound') UI.openSound();
       else if (a === 'config') UI.openConfig();
     });
   });

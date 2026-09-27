@@ -287,7 +287,7 @@
     [1, 2].forEach(function (n) {
       var L = v.lines[n], el = $('#pline-' + n);
       el.className = 'pline ' + (L.state || 'off');
-      el.querySelector('.ltext').textContent = L.state === 'off' ? '' : (L.state === 'ring' ? '着信 ' : L.state === 'hold' ? '保留 ' : '') + (L.label || '');
+      el.querySelector('.ltext').textContent = L.state === 'off' ? '' : (L.state === 'hold' ? '保留：' : '') + (L.label || (L.state === 'ring' ? '着信' : ''));
     });
     $('#phone-conf').classList.toggle('on', !!v.conf);
     $('#phone-clock').textContent = v.clock || '--:--';
@@ -456,6 +456,17 @@
     }).join('');
     openModal('相談メモ', html);
     $$('#modal-body .memo-tabs button').forEach(function (b) { b.onclick = function () { UI.openMemo(b.getAttribute('data-cat')); }; });
+  };
+
+  /* ================= サウンド（BGM鑑賞・素材確認用） ================= */
+  UI.openSound = function () {
+    var html = '<div style="color:var(--ink-dim);font-size:13px;margin-bottom:10px">BGM素材の確認用。ファイル未配置の曲は再生されません（js/assets.js 参照）。</div>';
+    Object.keys(window.ASSETS.bgm).forEach(function (id) {
+      html += '<div class="config-row"><label>' + esc(id) + '</label><span class="val" style="width:auto;flex:1">' + esc(window.ASSETS.bgm[id]) + '</span><button data-bgm="' + id + '">▶</button></div>';
+    });
+    html += '<div class="config-row"><label>停止</label><button data-bgm="">■</button></div>';
+    openModal('SOUND', html);
+    $$('#modal-body [data-bgm]').forEach(function (b) { b.onclick = function () { window.MTAudio.playBgm(b.getAttribute('data-bgm') || null); }; });
   };
 
   /* ================= モーダル ================= */

@@ -57,7 +57,6 @@ window.SCENARIO.push({ id: '07_night7', text: String.raw`
 その真ん中に、ひときわ大きな、白い星。
 ミル「あれ、私が見つけた星なんだよ」
 ミル「……お姉ちゃんは、気のせいだって言ったけどね」
-@clock 04:20
 @se phone_ring
 そのとき。
 遠くで、電話が鳴った。
