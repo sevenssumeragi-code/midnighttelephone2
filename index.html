@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ミッドナイト・テレフォン ―白い夜の相談室―</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <!-- ================= ゲーム画面 ================= -->
+    <div id="game" class="screen">
+      <div id="layer-bg" class="layer"></div>
+      <div id="layer-portrait" class="layer"></div>
+      <div id="layer-cg" class="layer"></div>
+      <div id="layer-effect" class="layer"></div>
+
+      <!-- 電話パネル -->
+      <div id="phone">
+        <div class="phone-top">
+          <span id="phone-chapter"></span>
+          <span id="phone-clock">--:--</span>
+        </div>
+        <div class="phone-lines">
+          <div class="pline" id="pline-1"><span class="lamp"></span><span class="lname">LINE 1</span><span class="ltext"></span></div>
+          <div class="pline" id="pline-2"><span class="lamp"></span><span class="lname">LINE 2</span><span class="ltext"></span></div>
+        </div>
+        <div class="phone-bottom"><span id="phone-conf">三者</span><span id="phone-vm">留守録</span></div>
+      </div>
+
+      <!-- テキストウィンドウ -->
+      <div id="textbox">
+        <div id="namebox"></div>
+        <div id="text"></div>
+        <div id="next-indicator">▼</div>
+      </div>
+
+      <!-- クイックメニュー -->
+      <div id="quickmenu">
+        <button data-act="auto">AUTO</button>
+        <button data-act="skip">SKIP</button>
+        <button data-act="log">LOG</button>
+        <button data-act="save">SAVE</button>
+        <button data-act="load">LOAD</button>
+        <button data-act="qsave">Q.SAVE</button>
+        <button data-act="qload">Q.LOAD</button>
+        <button data-act="memo">MEMO</button>
+        <button data-act="config">CONFIG</button>
+        <button data-act="hide">HIDE</button>
+        <button data-act="title">TITLE</button>
+      </div>
+
+      <div id="choices" class="overlay hidden"></div>
+      <div id="titlecard" class="overlay hidden"><div class="tc-inner"></div></div>
+      <div id="toast"></div>
+      <div id="mode-indicator"></div>
+    </div>
+
+    <!-- ================= タイトル ================= -->
+    <div id="title" class="screen">
+      <div class="title-bg"></div>
+      <div class="title-star"></div>
+      <div class="title-logo">
+        <div class="logo-main">ミッドナイト・テレフォン</div>
+        <div class="logo-sub">― 白い夜の相談室 ―</div>
+      </div>
+      <div class="title-menu">
+        <button data-title="new">はじめから</button>
+        <button data-title="continue">つづきから</button>
+        <button data-title="load">ロード</button>
+        <button data-title="gallery">ギャラリー</button>
+        <button data-title="endings">エンディング</button>
+        <button data-title="memo">相談メモ</button>
+        <button data-title="config">設定</button>
+      </div>
+      <div class="title-foot" id="title-foot"></div>
+    </div>
+
+    <!-- ================= 汎用モーダル ================= -->
+    <div id="modal" class="hidden">
+      <div class="modal-inner">
+        <div class="modal-head"><span id="modal-title"></span><button id="modal-close">×</button></div>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- ================= 名前入力 ================= -->
+    <div id="namein" class="overlay hidden">
+      <div class="namein-inner">
+        <div class="namein-label">あなたの名前</div>
+        <input id="namein-input" maxlength="8" autocomplete="off">
+        <div class="namein-note">※8文字まで。物語の中で、何人もの人があなたをこの名前で呼びます。</div>
+        <button id="namein-ok">決定</button>
+      </div>
+    </div>
+
+    <!-- ================= エンディング表示 ================= -->
+    <div id="endscreen" class="overlay hidden">
+      <div class="end-inner">
+        <div class="end-type"></div>
+        <div class="end-no"></div>
+        <div class="end-title"></div>
+        <div class="end-hint"></div>
+        <button id="end-ok">タイトルへ</button>
+      </div>
+    </div>
+  </div>
+  <div id="debug" class="hidden"></div>
+</div>
+
+<!-- データ -->
+<script src="data/characters.js"></script>
+<script src="data/cg.js"></script>
+<script src="data/endings.js"></script>
+<script src="data/memo.js"></script>
+<script src="js/assets.js"></script>
+<!-- シナリオ（ファイル名順に読み込む） -->
+<script src="scenario/00_prologue.js"></script>
+<script src="scenario/01_night1.js"></script>
+<script src="scenario/02_night2.js"></script>
+<script src="scenario/03_night3.js"></script>
+<script src="scenario/04_night4.js"></script>
+<script src="scenario/05_night5.js"></script>
+<script src="scenario/06_night6.js"></script>
+<script src="scenario/07_night7.js"></script>
+<script src="scenario/08_endings.js"></script>
+<!-- エンジン -->
+<script src="js/compiler.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
