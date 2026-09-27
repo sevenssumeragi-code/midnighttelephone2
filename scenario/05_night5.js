@@ -42,7 +42,9 @@ window.SCENARIO.push({ id: '05_night5', text: String.raw`
 ムニ「ぼく、ずっとそばにいたよ。いいこにしてたよ」
 私は、えらかったね、と言った。声が、震えないように。
 ムニの話では、レニィの家の電話は、子機を持ち歩けるものらしかった。
+@if F_RENY_OHAYO
 ――毎朝七時にね、電話がかかってくるの。
+@endif
 ――電話の音だけは、起きられるんだよ。
 @memo reny_hakumin
 私はムニに、一度電話を切って、鳴ったら子機をレニィの耳元に持っていくように頼んだ。
@@ -60,7 +62,9 @@ window.SCENARIO.push({ id: '05_night5', text: String.raw`
 ジンパチ「道端の奴らと、同じだ。揺すっても、叩いても、起きねえ」
 ジンパチ「息はしてる。顔も、いつもの寝顔だ。……いつもの寝顔、見たことねえけどよ」
 @memo reny_hakumin
+@if F_RENY_OHAYO
 ――毎朝七時にね、電話がかかってくるの。
+@endif
 ――電話の音だけは、起きられるんだよ。
 レニィの家の電話は、子機を持ち歩けるものらしかった。
 私はジンパチに、一度電話を切って、鳴ったら子機をレニィの耳元に当ててほしいと頼んだ。
@@ -392,9 +396,10 @@ window.SCENARIO.push({ id: '05_night5', text: String.raw`
 ネオ「ならば、料理を一皿ずつ、電話で実況してやる。貴様の分の皿も並べる。電話機の前にな」
 ネオ「主賓の席だ。……空席では、ない」
 @portrait reny smile
+@if F_NAME_RENY
 レニィ「僕、隣の席がいい。{name}の隣」
-@if !F_NAME_RENY
-レニィ「……相談員さんの、隣」
+@else
+レニィ「僕、隣の席がいい。相談員さんの隣」
 @endif
 ムニ「ぼくも！　ぼくも、となり！」
 ジンパチ「電話機の隣の取り合いすんな」
@@ -632,6 +637,7 @@ window.SCENARIO.push({ id: '05_night5', text: String.raw`
 // ------------------------------------------------------------
 *ep19
 @episode 第19話　火
+@bg city_fire
 @bgm bgm_fire
 @clock 01:10
 @set NERVE_TRY = 0
@@ -1121,6 +1127,11 @@ window.SCENARIO.push({ id: '05_night5', text: String.raw`
 // ------------------------------------------------------------
 *ep20
 @episode 第20話　焼け跡で
+@if ROUTE == "TRUTH"
+@bg room_dark
+@else
+@bg room_night
+@endif
 @bgm bgm_sad
 @clock 02:05
 @hangup
@@ -1134,8 +1145,10 @@ window.SCENARIO.push({ id: '05_night5', text: String.raw`
 @portrait neo normal
 ネオ「……客人たちは、無事に到着した」
 ネオ「煤だらけで、ひどい有様だ。風呂を沸かしてやる。……停電でも、薪の風呂がある。祖父の趣味だ」
+@if RENY_STATE == "AWAKE"
 ネオ「レニィ、貴様のカップ麺は、うちの食料庫にもある。しおバター、とやらだ。……祖父が、なぜか箱で買っていた」
 レニィ「え、ほんと……！？」
+@endif
 @if F_NEO_GRANDPA
 ネオ「月見館は、客人を拒まん。……今夜は、本当に、満室になりそうだ」
 @endif

@@ -7,7 +7,7 @@
 window.CHARACTERS = {
   reny: {
     name: 'レニィ', color: '#6fa8ff',
-    expressions: ['normal', 'smile', 'sad', 'surprised', 'sleepy', 'cry', 'serious'],
+    expressions: ['normal', 'smile', 'sad', 'surprised', 'sleepy', 'serious'],
     profile: '一人称「僕」。駅前のコンビニの上に住む男子高校生。いつも眠そうな、ほわほわした天然。青い髪、青い目。',
     secret: '白眠の初期症状を「いつもの眠気」と思い込んでいる。眠りの中で「別の夜」の夢を見る。'
   },

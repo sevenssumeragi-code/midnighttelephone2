@@ -91,8 +91,8 @@ window.SCENARIO.push({ id: '06_night6', text: String.raw`
 
 *ep21_route
 @set MINASE_SEARCH = "ROUTE"
-ジンパチ「中央駅の地下通路。昨日は入口が封鎖されてた。今夜は、別の入口から入ってみる」
-ジンパチ「地下は広い。停電で真っ暗だ。……時間は、かかるかもしれねえ」
+ジンパチ「中央駅の地下通路。前に来たときは、入口が封鎖されてた。今夜は、別の入口から入ってみる」
+ジンパチ「地下は広い。電気も止まってて真っ暗だ。……時間は、かかるかもしれねえ」
 @memo search_route
 @goto ep21_hyu
 
@@ -372,10 +372,14 @@ window.SCENARIO.push({ id: '06_night6', text: String.raw`
 @if F_KNOW_WAKE || F_GEL_THEORY
 ――眠っている人間は、夢の中で、何かを待っている。
 ――待っていたものが届けば、目を覚ます。
-@else
+@elif F_MINASE_PROMISE
 （……ミナセさんが、待っているもの）
 彼女が、最後に何を約束していたのか。私は知っていた。
 ――今日はね、帰ったら、ずっと一緒にいるって約束したの。
+@else
+（……ミナセさんが、待っているもの）
+三日前の明け方、赤い目で「行ってきます」と言った彼女が、帰り道に考えていたこと。
+それは、たぶん、私の薬のことだけではなかったはずだ。
 @endif
 ミナセさんが待っているのは、きっと、ひとつだけだ。
 @choice
@@ -414,7 +418,11 @@ window.SCENARIO.push({ id: '06_night6', text: String.raw`
 ムニ「……ママ」
 ムニ「ママ、ごめんね」
 ムニ「きらいって、いって、ごめんね。ほんとは、だいすき」
+@if F_NAME_MUNI
 ムニ「ぼく、れんしゅうしたの。{name}ちゃんと、いっぱい、れんしゅうしたの」
+@else
+ムニ「ぼく、れんしゅうしたの。でんわのひとと、いっぱい、れんしゅうしたの」
+@endif
 ムニ「だから、ちゃんと、いえるよ」
 ムニ「……ママ、おかえりなさい」
 @else
@@ -619,9 +627,10 @@ window.SCENARIO.push({ id: '06_night6', text: String.raw`
 @portrait muni normal
 ムニ「ジンパチおにいちゃんのぶん、とっておこう」
 ネオ「ああ。皿に取り分けて、布をかけておけ」
+@if F_NAME_MUNI
 ムニ「それから、{name}ちゃんのぶんも！」
-@if !F_NAME_MUNI
-ムニ「……それから、でんわのひとのぶんも！」
+@else
+ムニ「それから、でんわのひとのぶんも！」
 @endif
 ネオ「……それは、明日の朝食会で出す。焼きたてをな」
 ムニ「……それから」
@@ -1078,8 +1087,10 @@ window.SCENARIO.push({ id: '06_night6', text: String.raw`
 @endif
 @portrait none
 最後に、みんなが私に訊いた。
-@if RENY_STATE == "AWAKE"
+@if RENY_STATE == "AWAKE" && F_NAME_RENY
 レニィ「{name}は？」
+@elif RENY_STATE == "AWAKE"
+レニィ「相談員さんは？」
 @else
 ネオ「貴様は、どうしたい」
 @endif
@@ -1105,7 +1116,11 @@ window.SCENARIO.push({ id: '06_night6', text: String.raw`
 @memo plan_gather
 @if RENY_STATE == "AWAKE"
 @portrait reny smile
+@if F_NAME_RENY
 レニィ「……じゃあさ。僕たちが、{name}のところに行けばいいんだよ」
+@else
+レニィ「……じゃあさ。僕たちが、相談員さんのところに行けばいいんだよ」
+@endif
 レニィ「病院の屋上って、行ける？」
 @else
 @portrait jin normal

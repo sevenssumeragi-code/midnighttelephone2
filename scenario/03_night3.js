@@ -296,9 +296,10 @@ window.SCENARIO.push({ id: '03_night3', text: String.raw`
 ヒュウ「それでは、一曲お届けしましょう。……世界の終わりに、ふさわしい、明るい曲を」
 音楽が流れ始めると、ヒュウは電話口に戻ってきて、小さな声で言った。
 @portrait hyu normal
-ヒュウ「……ねえ、{name}さん。いえ、相談員さん」
-@if !F_NAME_ONAIR
-ヒュウ「……失礼、名前は伏せたのでしたね。相談員さん」
+@if F_NAME_HYU
+ヒュウ「……ねえ、{name}さん」
+@else
+ヒュウ「……ねえ、相談員さん」
 @endif
 ヒュウ「さっき、番組にメッセージが三通も来たんです。三通。新記録ですよ」
 ヒュウ「『相談員さんの声で、泣きそうになった』って」
@@ -411,9 +412,10 @@ window.SCENARIO.push({ id: '03_night3', text: String.raw`
 
 *ep11_secret_lead
 @portrait neo sad
+@if F_NAME_NEO
 ネオ「……なあ、{name}」
-@if !F_NAME_NEO
-ネオ「……いや、貴様は名乗らぬのだったな。……なあ、貴様」
+@else
+ネオ「……なあ、貴様」
 @endif
 ネオ「貴様には、白状しておく」
 @goto ep11_secret
@@ -498,7 +500,7 @@ window.SCENARIO.push({ id: '03_night3', text: String.raw`
 @line 1 talk 非通知
 @se wind
 今夜は、沈黙はなかった。
-@if F_NAME_ONAIR
+@if F_NAME_ONAIR && F_NAME_GEL
 @portrait gel serious
 ゲル「……ラジオで、名乗っていたな」
 ゲル「{name}」
@@ -692,10 +694,10 @@ window.SCENARIO.push({ id: '03_night3', text: String.raw`
 @portrait muni smile
 ムニ「できた！」
 ムニ「ママがかえってきたら、いちばんにいうね。ごめんねと、だいすきと、おかえり」
-@if !F_NAME_MUNI
-ムニ「でんわのひと、ありがとう」
-@else
+@if F_NAME_MUNI
 ムニ「{name}ちゃん、ありがとう」
+@else
+ムニ「でんわのひと、ありがとう」
 @endif
 @hangup
 @kokoro +1

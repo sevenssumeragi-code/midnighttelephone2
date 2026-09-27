@@ -105,6 +105,7 @@
       var seen = Object.keys(UI.globals.endings).length;
       s.querySelector('.end-hint').textContent = '到達エンディング ' + seen + ' / ' + window.ENDINGS.length + (e.type === 'BAD' ? '\nヒント：' + e.hint : '');
       s.classList.remove('hidden');
+      if (e.type !== 'BAD') window.MTAudio.playBgm('bgm_ending');
     },
     visual: function (v) { renderVisual(v); },
     sound: function (kind, id) {

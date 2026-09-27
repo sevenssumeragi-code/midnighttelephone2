@@ -32,7 +32,7 @@ function loadWindowScripts(files) {
 }
 
 const scenarioFiles = fs.readdirSync(path.join(ROOT, 'scenario')).filter(f => f.endsWith('.js')).sort().map(f => path.join(ROOT, 'scenario', f));
-const dataFiles = ['characters.js', 'cg.js', 'endings.js', 'memo.js'].map(f => path.join(ROOT, 'data', f)).filter(f => fs.existsSync(f));
+const dataFiles = ['characters.js', 'cg.js', 'endings.js', 'memo.js', 'flags.js'].map(f => path.join(ROOT, 'data', f)).filter(f => fs.existsSync(f));
 const assetFile = path.join(ROOT, 'js', 'assets.js');
 
 const W = loadWindowScripts([...dataFiles, ...(fs.existsSync(assetFile) ? [assetFile] : []), ...scenarioFiles]);
@@ -111,7 +111,14 @@ compiled.program.forEach(ins => {
 (W.ENDINGS || []).forEach(e => addMap(flagSets, 'G_END_' + e.id, '(engine:@ending)'));
 
 for (const [k, uses] of flagUses) if (!flagSets.has(k) && !k.startsWith('MEMO_')) P(`使用されるが設定されない変数 "${k}" (${uses.slice(0, 3).join(', ')})`);
-for (const [k, sets] of flagSets) if (!flagUses.has(k) && /^F_|^G_/.test(k) && !k.startsWith('G_END_') && !(W.FLAG_DOC_ONLY || []).includes(k)) Wn(`設定されるが条件で使われないフラグ "${k}" (${sets[0]})`);
+const DICT = W.FLAG_DICT || {};
+const isRecord = k => DICT[k] && typeof DICT[k] === 'object' && DICT[k].record;
+for (const [k, sets] of flagSets) {
+  if (sets[0].startsWith('(engine')) continue;
+  if (/^[A-Z]/.test(k) && !k.startsWith('G_') && !k.startsWith('aff.') && DICT[k] === undefined) P(`フラグ辞書(data/flags.js)に未登録の変数 "${k}" (${sets[0]})`);
+  if (!flagUses.has(k) && /^F_|^G_/.test(k) && !k.startsWith('G_END_') && !isRecord(k)) Wn(`設定されるが条件で使われないフラグ "${k}" (${sets[0]})`);
+}
+Object.keys(DICT).forEach(k => { if (!flagSets.has(k)) Wn(`フラグ辞書に登録されているがシナリオで設定されない変数 "${k}"`); });
 
 /* ---------------- 口調チェック ---------------- */
 const VOICE = W.VOICE_RULES || {};
@@ -130,6 +137,77 @@ compiled.program.forEach(ins => {
     if (re.test(t)) Wn(`口調注意 [${ins.speaker}] ${re} : 「${t}」 (${where(ins)})`);
   });
 });
+
+/* ---------------- 名前の呼び方チェック ----------------
+ * キャラが {name} と口にする行は、そのキャラに名乗っている（F_NAME_XXX）ことが
+ * 保証されていなければならない。保証の根拠：
+ *   (a) 囲んでいる @if / @elif の条件に F_NAME_XXX が肯定形で含まれる
+ *   (b) 同じラベル内で、それより前に @flag F_NAME_XXX がある
+ *   (c) ラベル単位の保証（エンディング判定で名前を知る者だけが到達する場所）
+ */
+const NAME_FLAG = { reny: 'F_NAME_RENY', hyu: 'F_NAME_HYU', jin: 'F_NAME_JIN', muni: 'F_NAME_MUNI', gel: 'F_NAME_GEL', neo: 'F_NAME_NEO' };
+const LABEL_GUARANTEE = {
+  end_true: Object.values(NAME_FLAG), end_true_post: Object.values(NAME_FLAG),
+  end_reny: ['F_NAME_RENY'], end_hyu: ['F_NAME_HYU'], end_jin: ['F_NAME_JIN'], end_muni: ['F_NAME_MUNI'], end_gel: ['F_NAME_GEL'], end_neo: ['F_NAME_NEO']
+};
+(function checkNames() {
+  const files = {};
+  W.SCENARIO.forEach(f => { files[f.id] = f.text.split(/\r?\n/); });
+  Object.keys(files).forEach(fid => {
+    let label = null, setFlags = new Set(), stack = [];
+    files[fid].forEach((raw, i) => {
+      const s = raw.trim();
+      if (!s || s.startsWith('//')) return;
+      if (s[0] === '*') { label = s.slice(1).trim(); setFlags = new Set(LABEL_GUARANTEE[label] || []); return; }
+      if (s[0] === '@') {
+        const m = s.match(/^@(\S+)\s*(.*)$/);
+        const cmd = m[1], arg = m[2];
+        if (cmd === 'if') stack.push({ cond: arg });
+        else if (cmd === 'elif') stack[stack.length - 1] = { cond: arg };
+        else if (cmd === 'else') stack[stack.length - 1] = { cond: '' };
+        else if (cmd === 'endif') stack.pop();
+        else if (cmd === 'flag') setFlags.add(arg.trim());
+        return;
+      }
+      const dm = s.match(Compiler.DIALOGUE_RE);
+      if (!dm || !dm[2].includes('{name}')) return;
+      const ch = nameToId[dm[1]];
+      const need = NAME_FLAG[ch];
+      if (!need) return;
+      const ok = setFlags.has(need) || stack.some(e => new RegExp('(^|[^!A-Z_])' + need + '(?![A-Z_])').test(e.cond));
+      if (!ok) P(`名前の呼び方: ${dm[1]} は {name} を知らない可能性がある (${fid}:${i + 1}) 「${dm[2].slice(0, 30)}」`);
+    });
+  });
+})();
+
+/* ---------------- 眠っている者が喋らないかチェック ----------------
+ * 第17話以降、レニィの台詞は「起きている」ことが保証された場所でのみ許可する。 */
+(function checkSleepers() {
+  const AWAKE_LABELS = new Set(['ep17_wake', 'ep17_wake_b', 'ep17_wake_common', 'ep17_dream', 'ep17_party', 'ep17_party_hotel', 'ep17_party_reny', 'ep17_party_common',
+    'ep19_apt', 'ep19_path_apt', 'ep19_apt_roof', 'ep19_apt_ladder', 'ep19_apt_stairs', 'ep19_apt_after', 'ep21_dream', 'ep21_dream_go',
+    'ep27_reny', 'end_true', 'end_true_post', 'end_reny']);
+  const ASLEEP_OK = /RENY_STATE\s*==\s*"AWAKE"|MUNI_LOC\s*==\s*"RENY"/;
+  const order = ['05_night5', '06_night6', '07_night7', '08_endings'];
+  W.SCENARIO.filter(f => order.includes(f.id)).forEach(f => {
+    let label = null, active = f.id !== '05_night5', stack = [];
+    f.text.split(/\r?\n/).forEach((raw, i) => {
+      const s = raw.trim();
+      if (!s || s.startsWith('//')) return;
+      if (s[0] === '*') { label = s.slice(1).trim(); if (label === 'ep17') active = true; return; }
+      if (s[0] === '@') {
+        const m = s.match(/^@(\S+)\s*(.*)$/);
+        if (m[1] === 'if') stack.push(m[2]); else if (m[1] === 'elif') stack[stack.length - 1] = m[2];
+        else if (m[1] === 'else') stack[stack.length - 1] = ''; else if (m[1] === 'endif') stack.pop();
+        return;
+      }
+      if (!active) return;
+      const dm = s.match(Compiler.DIALOGUE_RE);
+      if (!dm || dm[1] !== 'レニィ') return;
+      if (AWAKE_LABELS.has(label) || stack.some(c => ASLEEP_OK.test(c))) return;
+      P(`眠っている可能性のあるレニィが喋っている (${f.id}:${i + 1}, label=${label}) 「${dm[2].slice(0, 30)}」`);
+    });
+  });
+})();
 
 /* ---------------- ランダム周回シミュレーション ---------------- */
 function simulate(runs) {
